@@ -195,27 +195,26 @@
     </div>
   </div>
 
-<form action="https://formspree.io/f/mbdpdbwk" method="POST" enctype="multipart/form-data">
-
+<form action="https://formspree.io/f/mbdpdbwk" method="POST">
   <div class="section-label">Langkah 4 — Data Diri</div>
   <div class="form-row">
     <div class="form-group">
       <label>Nama Lengkap</label>
-      <input type="text" name="Full Name" placeholder="cth. Budi Santoso" required />
+      <input type="text" name="Full Name" id="input-name" placeholder="cth. Budi Santoso" required />
     </div>
     <div class="form-group">
       <label>Nama Panggilan</label>
-      <input type="text" name="Nickname" placeholder="cth. Budi" required />
+      <input type="text" name="Nickname" id="input-nick" placeholder="cth. Budi" required />
     </div>
   </div>
   <div class="form-row">
     <div class="form-group">
       <label>Nomor WhatsApp</label>
-      <input type="text" name="WhatsApp" placeholder="cth. 08123456789" required />
+      <input type="text" name="WhatsApp" id="input-wa" placeholder="cth. 08123456789" required />
     </div>
     <div class="form-group">
       <label>Alamat Email</label>
-      <input type="email" name="Email" placeholder="cth. budi@email.com" required />
+      <input type="email" name="Email" id="input-email" placeholder="cth. budi@email.com" required />
     </div>
   </div>
 
@@ -224,24 +223,45 @@
     <h3>💳 Info Pembayaran</h3>
     <div class="pay-row"><span class="pay-label">QRIS</span><span class="pay-value">SPEAKING ENGLISH SOCIETY</span></div>
     <div class="pay-row"><span class="pay-label">Bank BTN</span><span class="pay-value">0031301880001019</span></div>
+    <div class="pay-row pay-total-row" id="pay-total-row">
+      <span class="pay-label" style="font-weight:700; color:#1e40af;">Total pembayaran:</span>
+      <span class="pay-value" style="font-size:16px; color:#1a56db;" id="pay-total">—</span>
+    </div>
     <div class="qr-area"><img src="qris.jpeg" alt="QRIS" class="qr-image" /></div>
   </div>
 
-  <div class="section-label">Langkah 6 — Upload Bukti</div>
-  <div class="upload-area" onclick="document.getElementById('real-file-input').click()">
-    <div class="upload-icon">📎</div>
-    <div class="upload-text">Klik untuk upload bukti transfer</div>
+  <div class="section-label">Langkah 6 — Konfirmasi</div>
+  <div style="background: #fff8f1; border: 1.5px solid #ffedd5; border-radius: 12px; padding: 1rem; margin-top: 10px;">
+    <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+      <input type="checkbox" name="Payment Confirmed" value="YES" required style="width: 20px; height: 20px; margin-top: 2px;">
+      <span style="font-size: 14px; color: #9a3412; line-height: 1.4;">
+        <strong>Saya sudah melakukan pembayaran</strong> sesuai nominal yang tertera dan telah menyimpan bukti transfer/screenshot.
+      </span>
+    </label>
   </div>
-  <input type="file" name="attachment" id="real-file-input" style="display:none" required />
 
-  <button type="submit" class="btn-book">Konfirmasi Pendaftaran →</button>
+  <p class="error-msg" id="error-msg">Mohon pilih jadwal dan lengkapi data diri.</p>
 
+  <button type="submit" class="btn-book" id="btn-book" onclick="submitBooking()">
+    Konfirmasi & Selesaikan Pendaftaran →
+  </button>
 </form>
   
   <div class="success-box" id="success-box">
-    <h3>🎉 Pendaftaran berhasil!</h3>
-    <p id="success-text"></p>
+  <h3>🎉 Pendaftaran Berhasil!</h3>
+  <p id="success-text" style="margin-bottom: 15px;"></p>
+  
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <a href="https://wa.me/6287776943109" target="_blank" 
+       style="display: block; text-align: center; background: #25D366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 14px;">
+       Chat Admin via WhatsApp
+    </a>
+    <a href="https://instagram.com/officialsec.idn" target="_blank" 
+       style="display: block; text-align: center; background: #E1306C; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 14px;">
+       Follow Instagram @officialsec.idn
+    </a>
   </div>
+</div>
 
   <hr class="divider" />
   <p class="admin-toggle" onclick="toggleAdmin()">Lihat semua pendaftaran (admin)</p>
@@ -264,7 +284,7 @@
     red:  { name:'Speaktacular RED',  price:'Rp 100.000' }
   };
 
-  let currentDay = 'saturday', selectedSlot = null, selectedPkg = null, uploadedFile = null;
+  let currentDay = 'saturday', selectedSlot = null, selectedPkg = null;
   let bookings = JSON.parse(localStorage.getItem('sec_bookings') || '{}');
 
   function save() { localStorage.setItem('sec_bookings', JSON.stringify(bookings)); }
@@ -283,7 +303,7 @@
     SLOTS.forEach(slot => {
       const k = key(currentDay, slot.id), taken = !!bookings[k], sel = selectedSlot===slot.id && !taken;
       let tc, tt;
-      if (taken)    { tc='tag-taken';     tt='✗ Sudah Terisi'; }
+      if (taken)    { tc='tag-taken';      tt='✗ Sudah Terisi'; }
       else if (sel) { tc='tag-selected';  tt='✓ Dipilih'; }
       else          { tc='tag-available'; tt='Tersedia'; }
       const d = document.createElement('div');
@@ -305,51 +325,79 @@
     document.getElementById('pay-total').textContent = PACKAGES[pkg].price;
   }
 
-  function handleFile(e) {
-    const file = e.target.files[0]; if (!file) return;
-    uploadedFile = file;
-    const r = new FileReader();
-    r.onload = ev => {
-      const p = document.getElementById('upload-preview');
-      p.src = ev.target.result; p.style.display = 'block';
-      document.getElementById('upload-area').classList.add('has-file');
-      document.querySelector('#upload-area .upload-text').innerHTML = '<strong>'+file.name+'</strong>';
-    };
-    r.readAsDataURL(file);
-  }
+  async function submitBooking(event) {
+    // Prevent the form from refreshing the page
+    if(event) event.preventDefault();
 
-  function submitBooking() {
     const name = document.getElementById('input-name').value.trim();
     const nick = document.getElementById('input-nick').value.trim();
     const wa   = document.getElementById('input-wa').value.trim();
     const mail = document.getElementById('input-email').value.trim();
+    const checkbox = document.querySelector('input[name="Payment Confirmed"]');
     const err  = document.getElementById('error-msg');
-    if (!selectedSlot || !selectedPkg || !name || !nick || !wa || !mail || !uploadedFile) {
-      err.style.display = 'block'; return;
+    const btn  = document.getElementById('btn-book');
+
+    if (!selectedSlot || !selectedPkg || !name || !nick || !wa || !mail || !checkbox.checked) {
+      err.style.display = 'block'; 
+      return;
     }
+
     err.style.display = 'none';
     const k = key(currentDay, selectedSlot);
     if (bookings[k]) {
       err.textContent = 'Sesi ini baru saja terisi! Silakan pilih sesi lain.';
       err.style.display = 'block'; selectedSlot = null; renderSlots(); return;
     }
+
+    // Visual loading state
+    btn.disabled = true;
+    btn.textContent = "Memproses pendaftaran...";
+
+    // 1. Save locally for Admin Panel
     bookings[k] = { name, nick, wa, email: mail, pkg: selectedPkg, time: new Date().toISOString() };
     save();
+
     const sl  = SLOTS.find(s=>s.id===selectedSlot).label;
     const day = currentDay==='saturday' ? 'Sabtu' : 'Minggu';
+
+    // 2. Send to Formspree via AJAX (so page doesn't refresh)
+    const formData = new FormData();
+    formData.append('Nama', name);
+    formData.append('Email', mail);
+    formData.append('WhatsApp', wa);
+    formData.append('Paket', PACKAGES[selectedPkg].name);
+    formData.append('Jadwal', `${day}, ${sl}`);
+
+    try {
+      await fetch("https://formspree.io/f/mbdpdbwk", {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+    } catch (e) { console.log("Formspree error, but continuing..."); }
+
+    // 3. UI Success Update
     document.getElementById('success-box').style.display = 'block';
-    document.getElementById('success-text').textContent =
-      `Halo ${nick}! Pendaftaran kamu berhasil. Sesi: ${day}, ${sl}. Paket: ${PACKAGES[selectedPkg].name} (${PACKAGES[selectedPkg].price}). `+
-      `Admin akan segera menghubungi kamu via WhatsApp di nomor ${wa}. Feedback tertulis akan dikirim ke ${mail}. Semangat belajarnya ya! 🚀`;
-    document.getElementById('btn-book').disabled = true;
-    selectedSlot = null; renderSlots();
+    document.getElementById('success-text').textContent = `Halo ${nick}! Pendaftaran kamu berhasil dicatat.`;
+    btn.textContent = "Pendaftaran Berhasil ✓";
+    renderSlots();
+
+    // 4. WhatsApp Redirect
+    const message = `Halo Admin SEC! Saya ingin konfirmasi pembayaran IELTS Prediction Test.%0A%0A` +
+                    `Nama: ${name}%0A` +
+                    `Paket: ${PACKAGES[selectedPkg].name}%0A` +
+                    `Jadwal: ${day}, ${sl}%0A%0A` +
+                    `Saya akan melampirkan bukti transfer setelah ini.`;
+    
+    setTimeout(() => {
+      window.open(`https://wa.me/6287776943109?text=${message}`, '_blank');
+    }, 1500);
   }
 
   function toggleAdmin() {
     const p = document.getElementById('admin-panel');
-    const on = p.style.display === 'block';
-    p.style.display = on ? 'none' : 'block';
-    if (!on) renderAdmin();
+    p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    if (p.style.display === 'block') renderAdmin();
   }
 
   function renderAdmin() {
@@ -369,10 +417,9 @@
   }
 
   function clearBookings() {
-    if (!confirm('Hapus SEMUA data pendaftaran? Tindakan ini tidak bisa dibatalkan.')) return;
+    if (!confirm('Hapus SEMUA data?')) return;
     bookings = {}; save(); renderSlots(); renderAdmin();
   }
-
   renderSlots();
 </script>
 </body>
