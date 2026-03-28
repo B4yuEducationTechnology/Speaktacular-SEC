@@ -395,21 +395,59 @@
 
   renderSlots();
 
-  <form
-  action="https://formspree.io/f/mbdpdbwk"
-  method="POST"
->
-  <label>
-    Your email:
-    <input type="email" name="email">
-  </label>
-  <label>
-    Your message:
-    <textarea name="message"></textarea>
-  </label>
-  <!-- your other form fields go here -->
-  <button type="submit">Send</button>
-</form>
-</script>
-</body>
-</html>
+  function submitBooking() {
+    const name = document.getElementById('input-name').value.trim();
+    const nick = document.getElementById('input-nick').value.trim();
+    const wa   = document.getElementById('input-wa').value.trim();
+    const mail = document.getElementById('input-email').value.trim();
+    const err  = document.getElementById('error-msg');
+    const btn  = document.getElementById('btn-book');
+
+    // 1. Check if all fields are filled
+    if (!selectedSlot || !selectedPkg || !name || !nick || !wa || !mail || !uploadedFile) {
+      err.style.display = 'block'; 
+      err.textContent = "Mohon lengkapi semua data dan upload bukti bayar.";
+      return;
+    }
+    
+    // 2. Change button status so user doesn't click twice
+    err.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = "Sedang Mengirim... ⏳";
+
+    // 3. Prepare the data (This is what appears in your Email)
+    const formData = new FormData();
+    formData.append("Nama Lengkap", name);
+    formData.append("Nama Panggilan", nick);
+    formData.append("WhatsApp", wa);
+    formData.append("Email", mail);
+    formData.append("Hari", currentDay === 'saturday' ? 'Sabtu' : 'Minggu');
+    formData.append("Sesi", SLOTS.find(s => s.id === selectedSlot).label);
+    formData.append("Paket", selectedPkg.toUpperCase());
+    formData.append("Bukti_Bayar", uploadedFile); // This sends the actual photo!
+
+    // 4. Send to Formspree
+    fetch("https://formspree.io/f/mbdpdbwk", {
+      method: "POST",
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(response => {
+      if (response.ok) {
+        // Show Success Message
+        document.getElementById('success-box').style.display = 'block';
+        document.getElementById('success-text').textContent = 
+          `Halo ${nick}! Pendaftaran kamu berhasil dikirim. Admin akan segera menghubungi via WhatsApp ke ${wa}.`;
+        btn.textContent = "Berhasil Terkirim! ✅";
+      } else {
+        alert("Gagal mengirim. Silakan coba lagi atau hubungi admin.");
+        btn.disabled = false;
+        btn.textContent = "Konfirmasi Pendaftaran →";
+      }
+    })
+    .catch(error => {
+      alert("Terjadi kesalahan koneksi.");
+      btn.disabled = false;
+      btn.textContent = "Konfirmasi Pendaftaran →";
+    });
+  }
