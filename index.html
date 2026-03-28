@@ -303,7 +303,7 @@
     SLOTS.forEach(slot => {
       const k = key(currentDay, slot.id), taken = !!bookings[k], sel = selectedSlot===slot.id && !taken;
       let tc, tt;
-      if (taken)    { tc='tag-taken';      tt='✗ Sudah Terisi'; }
+      if (taken)    { tc='tag-taken';     tt='✗ Sudah Terisi'; }
       else if (sel) { tc='tag-selected';  tt='✓ Dipilih'; }
       else          { tc='tag-available'; tt='Tersedia'; }
       const d = document.createElement('div');
@@ -344,67 +344,38 @@
     const wa   = document.getElementById('input-wa').value.trim();
     const mail = document.getElementById('input-email').value.trim();
     const err  = document.getElementById('error-msg');
-    const btn  = document.getElementById('btn-book');
-
     if (!selectedSlot || !selectedPkg || !name || !nick || !wa || !mail || !uploadedFile) {
-      err.style.display = 'block'; 
-      err.textContent = "Mohon lengkapi semua data dan upload bukti bayar.";
-      return;
+      err.style.display = 'block'; return;
     }
-    
     err.style.display = 'none';
-    btn.disabled = true;
-    btn.textContent = "Sedang Mengirim... ⏳";
-
-    const formData = new FormData();
-    formData.append("Nama Lengkap", name);
-    formData.append("Nama Panggilan", nick);
-    formData.append("WhatsApp", wa);
-    formData.append("Email", mail);
-    formData.append("Hari", currentDay === 'saturday' ? 'Sabtu' : 'Minggu');
-    formData.append("Sesi", SLOTS.find(s => s.id === selectedSlot).label);
-    formData.append("Paket", selectedPkg.toUpperCase());
-    formData.append("Bukti_Bayar", uploadedFile);
-
-    fetch("https://formspree.io/f/mbdpdbwk", {
-      method: "POST",
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(response => {
-      if (response.ok) {
-        const k = key(currentDay, selectedSlot);
-        bookings[k] = { name, nick, wa, email: mail, pkg: selectedPkg, time: new Date().toISOString() };
-        save();
-        
-        document.getElementById('success-box').style.display = 'block';
-        document.getElementById('success-text').textContent = 
-          `Halo ${nick}! Pendaftaran kamu berhasil dikirim. Admin akan segera menghubungi via WhatsApp ke ${wa}.`;
-        btn.textContent = "Berhasil Terkirim! ✅";
-        renderSlots();
-      } else {
-        alert("Gagal mengirim. Silakan coba lagi.");
-        btn.disabled = false;
-        btn.textContent = "Konfirmasi Pendaftaran →";
-      }
-    })
-    .catch(error => {
-      alert("Terjadi kesalahan koneksi.");
-      btn.disabled = false;
-      btn.textContent = "Konfirmasi Pendaftaran →";
-    });
+    const k = key(currentDay, selectedSlot);
+    if (bookings[k]) {
+      err.textContent = 'Sesi ini baru saja terisi! Silakan pilih sesi lain.';
+      err.style.display = 'block'; selectedSlot = null; renderSlots(); return;
+    }
+    bookings[k] = { name, nick, wa, email: mail, pkg: selectedPkg, time: new Date().toISOString() };
+    save();
+    const sl  = SLOTS.find(s=>s.id===selectedSlot).label;
+    const day = currentDay==='saturday' ? 'Sabtu' : 'Minggu';
+    document.getElementById('success-box').style.display = 'block';
+    document.getElementById('success-text').textContent =
+      `Halo ${nick}! Pendaftaran kamu berhasil. Sesi: ${day}, ${sl}. Paket: ${PACKAGES[selectedPkg].name} (${PACKAGES[selectedPkg].price}). `+
+      `Admin akan segera menghubungi kamu via WhatsApp di nomor ${wa}. Feedback tertulis akan dikirim ke ${mail}. Semangat belajarnya ya! 🚀`;
+    document.getElementById('btn-book').disabled = true;
+    selectedSlot = null; renderSlots();
   }
 
   function toggleAdmin() {
     const p = document.getElementById('admin-panel');
-    p.style.display = (p.style.display === 'block') ? 'none' : 'block';
-    if (p.style.display === 'block') renderAdmin();
+    const on = p.style.display === 'block';
+    p.style.display = on ? 'none' : 'block';
+    if (!on) renderAdmin();
   }
 
   function renderAdmin() {
     const list = document.getElementById('bookings-list');
     const keys = Object.keys(bookings);
-    if (!keys.length) { list.innerHTML = '<p style="font-size:13px;color:#9ca3af;">Belum ada pendaftaran lokal.</p>'; return; }
+    if (!keys.length) { list.innerHTML = '<p style="font-size:13px;color:#9ca3af;">Belum ada pendaftaran.</p>'; return; }
     list.innerHTML = keys.map(k => {
       const b = bookings[k], [day, sid] = k.split('_');
       const slot = SLOTS.find(s=>s.id===sid);
@@ -418,7 +389,7 @@
   }
 
   function clearBookings() {
-    if (!confirm('Hapus SEMUA data pendaftaran lokal?')) return;
+    if (!confirm('Hapus SEMUA data pendaftaran? Tindakan ini tidak bisa dibatalkan.')) return;
     bookings = {}; save(); renderSlots(); renderAdmin();
   }
 
@@ -426,3 +397,4 @@
 </script>
 </body>
 </html>
+
