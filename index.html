@@ -195,25 +195,27 @@
     </div>
   </div>
 
+  <form action="https://formspree.io/f/mbdpdbwk" method="POST" enctype="multipart/form-data">
+  
   <div class="section-label">Langkah 4 — Data Diri</div>
   <div class="form-row">
     <div class="form-group">
       <label>Nama Lengkap</label>
-      <input type="text" id="input-name" placeholder="cth. Budi Santoso" />
+      <input type="text" name="Full Name" id="input-name" placeholder="cth. Budi Santoso" required />
     </div>
     <div class="form-group">
       <label>Nama Panggilan</label>
-      <input type="text" id="input-nick" placeholder="cth. Budi" />
+      <input type="text" name="Nickname" id="input-nick" placeholder="cth. Budi" required />
     </div>
   </div>
   <div class="form-row">
     <div class="form-group">
       <label>Nomor WhatsApp</label>
-      <input type="text" id="input-wa" placeholder="cth. 08123456789" />
+      <input type="text" name="WhatsApp" id="input-wa" placeholder="cth. 08123456789" required />
     </div>
     <div class="form-group">
       <label>Alamat Email</label>
-      <input type="email" id="input-email" placeholder="cth. budi@email.com" />
+      <input type="email" name="Email" id="input-email" placeholder="cth. budi@email.com" required />
     </div>
   </div>
 
@@ -233,7 +235,7 @@
       <span class="pay-value" style="font-size:16px; color:#1a56db;" id="pay-total">—</span>
     </div>
     <div class="qr-area">
-      <img src="qris.jpeg" alt="QRIS Speaktacular SEC" class="qr-image" />
+      <img src="qris.jpeg" alt="QRIS" class="qr-image" />
     </div>
   </div>
 
@@ -241,14 +243,16 @@
   <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
     <div class="upload-icon">📎</div>
     <div class="upload-text"><strong>Klik di sini untuk upload</strong> screenshot bukti transfer</div>
-    <div class="upload-text" style="font-size:11px; margin-top:4px;">Format JPG, PNG, atau GIF — maks. 5 MB</div>
-    <img id="upload-preview" class="upload-preview" alt="Preview bukti bayar" />
+    <img id="upload-preview" class="upload-preview" style="display:none" />
   </div>
-  <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFile(event)" />
+  
+  <input type="file" name="Proof of Payment" id="file-input" accept="image/*" style="display:none" onchange="handleFile(event)" required />
 
-  <p class="error-msg" id="error-msg">Mohon lengkapi semua data, pilih sesi &amp; paket, lalu upload bukti pembayaran.</p>
-  <button class="btn-book" id="btn-book" onclick="submitBooking()">Konfirmasi Pendaftaran →</button>
+  <p class="error-msg" id="error-msg">Mohon lengkapi semua data.</p>
+  
+  <button type="submit" class="btn-book" id="btn-book">Konfirmasi Pendaftaran →</button>
 
+</form>
   <div class="success-box" id="success-box">
     <h3>🎉 Pendaftaran berhasil!</h3>
     <p id="success-text"></p>
