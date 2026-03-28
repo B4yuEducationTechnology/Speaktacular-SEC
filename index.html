@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speaktacular SEC — IELTS Speaking Prediction Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f4fb;
+      color: #1a1a2e;
+      min-height: 100vh;
+      padding: 2rem 1rem 3rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.09);
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+    .brand-logo { width: 44px; height: 44px; background: #1a56db; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; }
+    .brand-name { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+    .brand-sub  { font-size: 12px; color: #6b7280; }
+
+    h1   { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+    .desc { font-size: 14px; color: #6b7280; line-height: 1.65; margin-bottom: 1.5rem; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #9ca3af;
+      margin-bottom: 9px; margin-top: 1.5rem;
+    }
+
+    .day-tabs { display: flex; gap: 8px; }
+    .day-tab { flex: 1; padding: 10px 6px; border: 1.5px solid #e5e7eb; border-radius: 10px; background: #fff; font-size: 14px; font-weight: 500; color: #6b7280; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .day-tab:hover  { border-color: #93c5fd; color: #1d4ed8; }
+    .day-tab.active { border-color: #1a56db; color: #1a56db; background: #eff6ff; font-weight: 700; }
+
+    .slots { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .slot { padding: 13px 16px; border: 1.5px solid #e5e7eb; border-radius: 10px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.15s; }
+    .slot:hover:not(.taken):not(.selected) { border-color: #93c5fd; background: #f0f7ff; }
+    .slot.selected { border-color: #1a56db; background: #eff6ff; }
+    .slot.taken    { background: #f9fafb; cursor: not-allowed; opacity: 0.55; }
+    .slot-time { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+    .slot-tag  { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .tag-available { background: #ecfdf5; color: #065f46; }
+    .tag-taken     { background: #fef2f2; color: #991b1b; }
+    .tag-selected  { background: #dbeafe; color: #1e40af; }
+
+    .packages { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .pkg-card { border: 2px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.15s; position: relative; background: #fff; }
+    .pkg-card:hover   { border-color: #93c5fd; background: #f0f7ff; }
+    .pkg-card.selected { border-color: #1a56db; background: #eff6ff; }
+    .pkg-card.selected .pkg-radio { background: #1a56db; border-color: #1a56db; }
+    .pkg-card.selected .pkg-radio::after { display: block; }
+    .pkg-header { display: flex; align-items: flex-start; gap: 10px; }
+    .pkg-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #d1d5db; flex-shrink: 0; margin-top: 3px; position: relative; transition: all 0.15s; }
+    .pkg-radio::after { content: ''; display: none; width: 8px; height: 8px; border-radius: 50%; background: #fff; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .pkg-info { flex: 1; }
+    .pkg-name  { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+    .pkg-name span { font-weight: 400; color: #6b7280; font-size: 13px; margin-left: 6px; }
+    .pkg-price-row { display: flex; align-items: baseline; gap: 8px; margin: 4px 0 8px; flex-wrap: wrap; }
+    .pkg-price    { font-size: 20px; font-weight: 800; color: #1a56db; }
+    .pkg-original { font-size: 13px; color: #9ca3af; text-decoration: line-through; }
+    .pkg-badge    { font-size: 11px; font-weight: 700; background: #fef9c3; color: #854d0e; padding: 2px 8px; border-radius: 20px; }
+    .pkg-features { display: flex; flex-direction: column; gap: 5px; }
+    .pkg-feat     { font-size: 13px; color: #374151; display: flex; align-items: flex-start; gap: 7px; }
+    .pkg-feat::before { content: '✓'; color: #059669; font-weight: 700; flex-shrink: 0; }
+    .pkg-best { position: absolute; top: -1px; right: 14px; background: #1a56db; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 0 0 8px 8px; letter-spacing: 0.05em; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .form-group { margin-top: 10px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    .form-group input { width: 100%; padding: 10px 13px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 14px; color: #1a1a2e; font-family: inherit; transition: border-color 0.15s; }
+    .form-group input:focus { outline: none; border-color: #1a56db; box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+
+    .payment-box { background: #f8faff; border: 1.5px solid #dbeafe; border-radius: 12px; padding: 1.25rem; margin-top: 10px; }
+    .payment-box h3 { font-size: 14px; font-weight: 700; color: #1e40af; margin-bottom: 10px; }
+    .pay-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .pay-label { font-size: 13px; color: #6b7280; }
+    .pay-value { font-size: 13px; font-weight: 600; color: #1a1a2e; text-align: right; }
+    .pay-total-row { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid #dbeafe; }
+    .qr-area { margin-top: 14px; text-align: center; }
+    .qr-placeholder { margin: 0 auto; width: 170px; height: 170px; border: 2px dashed #93c5fd; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #93c5fd; font-size: 12px; text-align: center; line-height: 1.6; }
+    .qr-image { margin: 0 auto; display: block; max-width: 190px; border-radius: 10px; border: 1px solid #dbeafe; }
+
+    .upload-area { border: 2px dashed #d1d5db; border-radius: 10px; padding: 22px 16px; text-align: center; cursor: pointer; background: #f9fafb; transition: all 0.15s; margin-top: 8px; }
+    .upload-area:hover { border-color: #1a56db; background: #eff6ff; }
+    .upload-area.has-file { border-color: #059669; border-style: solid; background: #ecfdf5; }
+    .upload-icon { font-size: 26px; margin-bottom: 6px; }
+    .upload-text { font-size: 13px; color: #6b7280; }
+    .upload-text strong { color: #1a56db; }
+    .upload-preview { max-width: 100%; max-height: 140px; border-radius: 8px; margin-top: 10px; display: none; }
+
+    .btn-book { width: 100%; padding: 15px; background: #1a56db; color: #fff; border: none; border-radius: 11px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 1.5rem; font-family: inherit; transition: background 0.15s, transform 0.1s; }
+    .btn-book:hover:not(:disabled) { background: #1740a8; transform: translateY(-1px); }
+    .btn-book:disabled { background: #d1d5db; cursor: not-allowed; transform: none; }
+
+    .error-msg { font-size: 13px; color: #b91c1c; margin-top: 8px; display: none; }
+
+    .success-box { background: #ecfdf5; border: 1.5px solid #6ee7b7; border-radius: 12px; padding: 1.25rem; margin-top: 1rem; display: none; }
+    .success-box h3 { font-size: 16px; font-weight: 700; color: #065f46; margin-bottom: 6px; }
+    .success-box p  { font-size: 14px; color: #047857; line-height: 1.65; }
+
+    .divider { border: none; border-top: 1px solid #f3f4f6; margin: 1.75rem 0 0; }
+
+    .admin-toggle { font-size: 12px; color: #9ca3af; text-align: center; cursor: pointer; text-decoration: underline; margin-top: 1.25rem; }
+    .admin-panel  { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; display: none; }
+    .admin-panel h3 { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 10px; }
+    .booking-entry { font-size: 13px; color: #6b7280; padding: 8px 0; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .booking-entry:last-child { border-bottom: none; }
+    .booking-entry strong { color: #1a1a2e; display: block; }
+    .btn-clear { font-size: 12px; color: #b91c1c; background: none; border: none; cursor: pointer; font-family: inherit; margin-top: 10px; text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.25rem; }
+      h1 { font-size: 19px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="brand">
+    <div class="brand-logo">🎙</div>
+    <div>
+      <div class="brand-name">Speaktacular SEC</div>
+      <div class="brand-sub">by B4yu Education Technology</div>
+    </div>
+  </div>
+
+  <h1>IELTS Speaking Prediction Test</h1>
+  <p class="desc">Latih kemampuan speaking IELTS kamu bersama tutor berpengalaman. Dapatkan simulasi realistis, feedback verbal & tertulis, serta materi eksklusif — dengan harga yang sangat terjangkau!</p>
+
+  <div class="section-label">Langkah 1 — Pilih Hari</div>
+  <div class="day-tabs">
+    <div class="day-tab active" id="tab-sat" onclick="selectDay('saturday')">🗓 Sabtu</div>
+    <div class="day-tab"        id="tab-sun" onclick="selectDay('sunday')">🗓 Minggu</div>
+  </div>
+
+  <div class="section-label">Langkah 2 — Pilih Sesi</div>
+  <div class="slots" id="slots-container"></div>
+
+  <div class="section-label">Langkah 3 — Pilih Paket</div>
+  <div class="packages">
+
+    <div class="pkg-card" id="pkg-core" onclick="selectPackage('core')">
+      <div class="pkg-header">
+        <div class="pkg-radio" id="radio-core"></div>
+        <div class="pkg-info">
+          <div class="pkg-name">Speaktacular Core <span>— Paket Dasar</span></div>
+          <div class="pkg-price-row">
+            <span class="pkg-price">Rp 75.000</span>
+            <span class="pkg-original">Rp 150.000</span>
+            <span class="pkg-badge">HEMAT 50%!</span>
+          </div>
+          <div class="pkg-features">
+            <span class="pkg-feat">Simulasi Speaking IELTS penuh 15 menit</span>
+            <span class="pkg-feat">Feedback verbal langsung dari tutor</span>
+            <span class="pkg-feat">Feedback tertulis dikirim via email</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pkg-card" id="pkg-red" onclick="selectPackage('red')">
+      <div class="pkg-best">PALING LENGKAP</div>
+      <div class="pkg-header">
+        <div class="pkg-radio" id="radio-red"></div>
+        <div class="pkg-info">
+          <div class="pkg-name">Speaktacular RED <span>— Paket Premium</span></div>
+          <div class="pkg-price-row">
+            <span class="pkg-price">Rp 100.000</span>
+            <span class="pkg-original">Rp 400.000</span>
+            <span class="pkg-badge">HEMAT 75%!</span>
+          </div>
+          <div class="pkg-features">
+            <span class="pkg-feat">Simulasi Speaking IELTS penuh 15 menit</span>
+            <span class="pkg-feat">Feedback verbal langsung dari tutor</span>
+            <span class="pkg-feat">Feedback tertulis dikirim via email</span>
+            <span class="pkg-feat">E-book Cambridge Official Guide to IELTS</span>
+            <span class="pkg-feat">Vocabulary Flashcards eksklusif</span>
+            <span class="pkg-feat">SEC Official IELTS Speaking Frameworks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Langkah 4 — Data Diri</div>
+  <div class="form-row">
+    <div class="form-group" style="margin-top:0">
+      <label>Nama Lengkap</label>
+      <input type="text" id="input-name" placeholder="cth. Budi Santoso" />
+    </div>
+    <div class="form-group" style="margin-top:0">
+      <label>Nama Panggilan</label>
+      <input type="text" id="input-nick" placeholder="cth. Budi" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group" style="margin-top:0">
+      <label>Nomor WhatsApp</label>
+      <input type="text" id="input-wa" placeholder="cth. 08123456789" />
+    </div>
+    <div class="form-group" style="margin-top:0">
+      <label>Alamat Email</label>
+      <input type="email" id="input-email" placeholder="cth. budi@email.com" />
+    </div>
+  </div>
+
+  <div class="section-label">Langkah 5 — Lakukan Pembayaran</div>
+  <div class="payment-box">
+    <h3>💳 Info Pembayaran</h3>
+    <div class="pay-row">
+      <span class="pay-label">QRIS</span>
+      <span class="pay-value">SPEAKING ENGLISH SOCIETY</span>
+    </div>
+    <div class="pay-row">
+      <span class="pay-label">Bank BTN</span>
+      <span class="pay-value">No. Rek. 0031301880001019</span>
+    </div>
+    <div class="pay-row pay-total-row" id="pay-total-row">
+      <span class="pay-label" style="font-weight:700; color:#1e40af;">Total pembayaran:</span>
+      <span class="pay-value" style="font-size:16px; color:#1a56db;" id="pay-total">—</span>
+    </div>
+    <div class="qr-area">
+      <!-- QR CODE PLACEHOLDER — replace with <img> once you have the file -->
+      <div class="qr-placeholder" id="qr-placeholder">
+        <div style="font-size:36px; margin-bottom:8px;">📷</div>
+        <div>QR Code QRIS<br>akan tampil di sini</div>
+      </div>
+      <!-- AFTER uploading qr.png to GitHub, delete the div above and uncomment this:
+      <img src="qr.png" alt="QRIS Speaktacular SEC" class="qr-image" />
+      -->
+    </div>
+  </div>
+
+  <div class="section-label">Langkah 6 — Upload Bukti Pembayaran</div>
+  <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+    <div class="upload-icon">📎</div>
+    <div class="upload-text"><strong>Klik di sini untuk upload</strong> screenshot bukti transfer</div>
+    <div class="upload-text" style="font-size:11px; margin-top:4px;">Format JPG, PNG, atau GIF — maks. 5 MB</div>
+    <img id="upload-preview" class="upload-preview" alt="Preview bukti bayar" />
+  </div>
+  <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFile(event)" />
+
+  <p class="error-msg" id="error-msg">Mohon lengkapi semua data, pilih sesi &amp; paket, lalu upload bukti pembayaran.</p>
+  <button class="btn-book" id="btn-book" onclick="submitBooking()">Konfirmasi Pendaftaran →</button>
+
+  <div class="success-box" id="success-box">
+    <h3>🎉 Pendaftaran berhasil!</h3>
+    <p id="success-text"></p>
+  </div>
+
+  <hr class="divider" />
+  <p class="admin-toggle" onclick="toggleAdmin()">Lihat semua pendaftaran (admin)</p>
+  <div class="admin-panel" id="admin-panel">
+    <h3>Semua Pendaftaran</h3>
+    <div id="bookings-list"></div>
+    <button class="btn-clear" onclick="clearBookings()">Hapus semua data</button>
+  </div>
+
+</div>
+<script>
+  const SLOTS = [
+    { id:'S1', label:'Sesi 1 — 13:00 s/d 13:20' },
+    { id:'S2', label:'Sesi 2 — 13:30 s/d 13:50' },
+    { id:'S3', label:'Sesi 3 — 14:00 s/d 14:20' }
+  ];
+  const PACKAGES = {
+    core: { name:'Speaktacular Core', price:'Rp 75.000' },
+    red:  { name:'Speaktacular RED',  price:'Rp 100.000' }
+  };
+
+  let currentDay = 'saturday', selectedSlot = null, selectedPkg = null, uploadedFile = null;
+  let bookings = JSON.parse(localStorage.getItem('sec_bookings') || '{}');
+
+  function save() { localStorage.setItem('sec_bookings', JSON.stringify(bookings)); }
+  function key(day, id) { return day + '_' + id; }
+
+  function selectDay(day) {
+    currentDay = day; selectedSlot = null;
+    document.getElementById('tab-sat').className = 'day-tab' + (day==='saturday' ? ' active' : '');
+    document.getElementById('tab-sun').className = 'day-tab' + (day==='sunday'   ? ' active' : '');
+    renderSlots();
+  }
+
+  function renderSlots() {
+    const c = document.getElementById('slots-container');
+    c.innerHTML = '';
+    SLOTS.forEach(slot => {
+      const k = key(currentDay, slot.id), taken = !!bookings[k], sel = selectedSlot===slot.id && !taken;
+      let tc, tt;
+      if (taken)    { tc='tag-taken';     tt='✗ Sudah Terisi'; }
+      else if (sel) { tc='tag-selected';  tt='✓ Dipilih'; }
+      else          { tc='tag-available'; tt='Tersedia'; }
+      const d = document.createElement('div');
+      d.className = 'slot'+(taken?' taken':'')+(sel?' selected':'');
+      d.innerHTML = `<span class="slot-time">${slot.label}</span><span class="slot-tag ${tc}">${tt}</span>`;
+      if (!taken) d.onclick = () => { selectedSlot = slot.id; renderSlots(); };
+      c.appendChild(d);
+    });
+  }
+
+  function selectPackage(pkg) {
+    selectedPkg = pkg;
+    document.getElementById('pkg-core').className = 'pkg-card'+(pkg==='core'?' selected':'');
+    document.getElementById('pkg-red').className  = 'pkg-card'+(pkg==='red' ?' selected':'');
+    document.getElementById('radio-core').className = 'pkg-radio'+(pkg==='core'?' selected':'');
+    document.getElementById('radio-red').className  = 'pkg-radio'+(pkg==='red' ?' selected':'');
+    const row = document.getElementById('pay-total-row');
+    row.style.display = 'flex';
+    document.getElementById('pay-total').textContent = PACKAGES[pkg].price;
+  }
+
+  function handleFile(e) {
+    const file = e.target.files[0]; if (!file) return;
+    uploadedFile = file;
+    const r = new FileReader();
+    r.onload = ev => {
+      const p = document.getElementById('upload-preview');
+      p.src = ev.target.result; p.style.display = 'block';
+      document.getElementById('upload-area').classList.add('has-file');
+      document.querySelector('#upload-area .upload-text').innerHTML = '<strong>'+file.name+'</strong>';
+    };
+    r.readAsDataURL(file);
+  }
+
+  function submitBooking() {
+    const name = document.getElementById('input-name').value.trim();
+    const nick = document.getElementById('input-nick').value.trim();
+    const wa   = document.getElementById('input-wa').value.trim();
+    const mail = document.getElementById('input-email').value.trim();
+    const err  = document.getElementById('error-msg');
+    if (!selectedSlot || !selectedPkg || !name || !nick || !wa || !mail || !uploadedFile) {
+      err.style.display = 'block'; return;
+    }
+    err.style.display = 'none';
+    const k = key(currentDay, selectedSlot);
+    if (bookings[k]) {
+      err.textContent = 'Sesi ini baru saja terisi! Silakan pilih sesi lain.';
+      err.style.display = 'block'; selectedSlot = null; renderSlots(); return;
+    }
+    bookings[k] = { name, nick, wa, email: mail, pkg: selectedPkg, time: new Date().toISOString() };
+    save();
+    const sl  = SLOTS.find(s=>s.id===selectedSlot).label;
+    const day = currentDay==='saturday' ? 'Sabtu' : 'Minggu';
+    document.getElementById('success-box').style.display = 'block';
+    document.getElementById('success-text').textContent =
+      `Halo ${nick}! Pendaftaran kamu berhasil. Sesi: ${day}, ${sl}. Paket: ${PACKAGES[selectedPkg].name} (${PACKAGES[selectedPkg].price}). `+
+      `Admin akan segera menghubungi kamu via WhatsApp di nomor ${wa}. Feedback tertulis akan dikirim ke ${mail}. Semangat belajarnya ya! 🚀`;
+    document.getElementById('btn-book').disabled = true;
+    selectedSlot = null; renderSlots();
+  }
+
+  function toggleAdmin() {
+    const p = document.getElementById('admin-panel');
+    const on = p.style.display === 'block';
+    p.style.display = on ? 'none' : 'block';
+    if (!on) renderAdmin();
+  }
+
+  function renderAdmin() {
+    const list = document.getElementById('bookings-list');
+    const keys = Object.keys(bookings);
+    if (!keys.length) { list.innerHTML = '<p style="font-size:13px;color:#9ca3af;">Belum ada pendaftaran.</p>'; return; }
+    list.innerHTML = keys.map(k => {
+      const b = bookings[k], [day, sid] = k.split('_');
+      const slot = SLOTS.find(s=>s.id===sid);
+      const d = new Date(b.time).toLocaleString('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+      return `<div class="booking-entry">
+        <div><strong>${b.name} (${b.nick})</strong>${day==='saturday'?'Sabtu':'Minggu'} — ${slot?slot.label:k}<br>
+        <span style="color:#1a56db;font-size:12px;">${PACKAGES[b.pkg]?PACKAGES[b.pkg].name:b.pkg}</span></div>
+        <div style="text-align:right;font-size:12px;flex-shrink:0;">${b.wa}<br>${b.email}<br><span style="color:#d1d5db;">${d}</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  function clearBookings() {
+    if (!confirm('Hapus SEMUA data pendaftaran? Tindakan ini tidak bisa dibatalkan.')) return;
+    bookings = {}; save(); renderSlots(); renderAdmin();
+  }
+
+  renderSlots();
+</script>
+</body>
+</html>
