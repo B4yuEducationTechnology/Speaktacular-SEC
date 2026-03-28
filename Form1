@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speaktacular SEC — IELTS Speaking Prediction Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f4f6fb;
+      color: #1a1a2e;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .brand-logo {
+      width: 40px; height: 40px;
+      background: #1a56db;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: #fff;
+    }
+    .brand-name { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+    .brand-sub  { font-size: 12px; color: #6b7280; }
+
+    h1 { font-size: 21px; font-weight: 700; margin-bottom: 4px; color: #1a1a2e; }
+    .desc { font-size: 14px; color: #6b7280; margin-bottom: 1.25rem; line-height: 1.6; }
+
+    .price-pill {
+      display: inline-block;
+      background: #ecfdf5; color: #065f46;
+      font-size: 13px; font-weight: 600;
+      padding: 4px 12px; border-radius: 20px;
+      border: 1px solid #a7f3d0;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: #9ca3af; margin-bottom: 8px; margin-top: 1.5rem;
+    }
+    .section-label:first-of-type { margin-top: 0; }
+
+    .day-tabs { display: flex; gap: 8px; margin-bottom: 1rem; }
+    .day-tab {
+      flex: 1; padding: 10px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px; font-weight: 500;
+      color: #6b7280; cursor: pointer;
+      text-align: center; transition: all 0.15s;
+    }
+    .day-tab:hover { border-color: #93c5fd; color: #1d4ed8; }
+    .day-tab.active {
+      border-color: #1a56db; color: #1a56db;
+      background: #eff6ff; font-weight: 700;
+    }
+
+    .slots { display: flex; flex-direction: column; gap: 8px; }
+    .slot {
+      padding: 13px 16px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.15s;
+    }
+    .slot:hover:not(.taken):not(.selected) { border-color: #93c5fd; background: #f0f7ff; }
+    .slot.selected { border-color: #1a56db; background: #eff6ff; }
+    .slot.taken { background: #f9fafb; cursor: not-allowed; opacity: 0.6; }
+    .slot-time { font-size: 15px; font-weight: 500; color: #1a1a2e; }
+    .slot-tag {
+      font-size: 12px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .tag-available { background: #ecfdf5; color: #065f46; }
+    .tag-taken     { background: #fef2f2; color: #991b1b; }
+    .tag-selected  { background: #dbeafe; color: #1e40af; }
+
+    .form-group { margin-top: 1rem; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    .form-group input {
+      width: 100%; padding: 10px 13px;
+      border: 1.5px solid #e5e7eb; border-radius: 9px;
+      font-size: 14px; color: #1a1a2e;
+      font-family: inherit; transition: border-color 0.15s;
+    }
+    .form-group input:focus { outline: none; border-color: #1a56db; box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+
+    .upload-area {
+      border: 2px dashed #d1d5db;
+      border-radius: 10px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      background: #f9fafb;
+      transition: all 0.15s;
+      margin-top: 6px;
+    }
+    .upload-area:hover { border-color: #1a56db; background: #eff6ff; }
+    .upload-area.has-file { border-color: #059669; border-style: solid; background: #ecfdf5; }
+    .upload-icon { font-size: 28px; margin-bottom: 8px; }
+    .upload-text { font-size: 13px; color: #6b7280; }
+    .upload-text strong { color: #1a56db; }
+    .upload-preview {
+      max-width: 100%; max-height: 150px;
+      border-radius: 8px; margin-top: 10px;
+      display: none;
+    }
+
+    .btn-book {
+      width: 100%; padding: 14px;
+      background: #1a56db; color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 700;
+      cursor: pointer; margin-top: 1.5rem;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    .btn-book:hover:not(:disabled) { background: #1740a8; transform: translateY(-1px); }
+    .btn-book:active:not(:disabled) { transform: translateY(0); }
+    .btn-book:disabled { background: #d1d5db; cursor: not-allowed; }
+
+    .success-box {
+      background: #ecfdf5; border: 1.5px solid #6ee7b7;
+      border-radius: 12px; padding: 1.25rem;
+      margin-top: 1rem; display: none;
+    }
+    .success-box h3 { font-size: 16px; font-weight: 700; color: #065f46; margin-bottom: 6px; }
+    .success-box p  { font-size: 14px; color: #047857; line-height: 1.6; }
+
+    .error-msg { font-size: 13px; color: #b91c1c; margin-top: 8px; display: none; }
+
+    .divider { border: none; border-top: 1px solid #f3f4f6; margin: 1.75rem 0 1rem; }
+
+    .admin-toggle {
+      font-size: 12px; color: #9ca3af; text-align: center;
+      cursor: pointer; text-decoration: underline; margin-top: 1.25rem;
+    }
+    .admin-panel {
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 12px; padding: 1rem 1.25rem;
+      margin-top: 1rem; display: none;
+    }
+    .admin-panel h3 { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 10px; }
+    .booking-entry {
+      font-size: 13px; color: #6b7280;
+      padding: 7px 0; border-bottom: 1px solid #f3f4f6;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .booking-entry:last-child { border-bottom: none; }
+    .booking-entry strong { color: #1a1a2e; }
+    .btn-clear {
+      font-size: 12px; color: #b91c1c;
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; margin-top: 10px;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.25rem; }
+      h1 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <div class="brand-logo">🎙</div>
+    <div>
+      <div class="brand-name">Speaktacular SEC</div>
+      <div class="brand-sub">by B4yu Education Technology</div>
+    </div>
+  </div>
+
+  <h1>IELTS Speaking Prediction Test</h1>
+  <p class="desc">Book your 20-minute 1-on-1 session with a certified examiner. Includes learning materials and detailed personalised feedback.</p>
+  <span class="price-pill">✅ Only Rp 75.000 per session</span>
+
+  <div class="section-label">Step 1 — Choose a day</div>
+  <div class="day-tabs">
+    <div class="day-tab active" id="tab-sat" onclick="selectDay('saturday')">🗓 Saturday</div>
+    <div class="day-tab"        id="tab-sun" onclick="selectDay('sunday')">🗓 Sunday</div>
+  </div>
+
+  <div class="section-label">Step 2 — Choose a time slot</div>
+  <div class="slots" id="slots-container"></div>
+
+  <hr class="divider" />
+
+  <div class="section-label">Step 3 — Your details</div>
+  <div class="form-group">
+    <label>Full name</label>
+    <input type="text" id="input-name" placeholder="e.g. Budi Santoso" />
+  </div>
+  <div class="form-group" style="margin-top:10px;">
+    <label>WhatsApp number</label>
+    <input type="text" id="input-wa" placeholder="e.g. 08123456789" />
+  </div>
+
+  <hr class="divider" />
+
+  <div class="section-label">Step 4 — Upload payment proof</div>
+  <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+    <div class="upload-icon">📎</div>
+    <div class="upload-text"><strong>Click here to upload</strong> your transfer screenshot</div>
+    <div class="upload-text" style="font-size:11px;margin-top:4px;">JPG, PNG, or GIF — max 5 MB</div>
+    <img id="upload-preview" class="upload-preview" alt="Payment proof preview" />
+  </div>
+  <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFile(event)" />
+
+  <p class="error-msg" id="error-msg">Please complete all fields, select a time slot, and upload your payment proof.</p>
+
+  <button class="btn-book" id="btn-book" onclick="submitBooking()">Confirm my booking →</button>
+
+  <div class="success-box" id="success-box">
+    <h3>🎉 Booking confirmed!</h3>
+    <p id="success-text"></p>
+  </div>
+
+  <hr class="divider" />
+  <p class="admin-toggle" onclick="toggleAdmin()">View bookings (admin only)</p>
+  <div class="admin-panel" id="admin-panel">
+    <h3>All bookings</h3>
+    <div id="bookings-list"></div>
+    <button class="btn-clear" onclick="clearBookings()">Clear all bookings</button>
+  </div>
+</div>
+
+<script>
+  const SLOTS = [
+    { id: 'S1', label: 'Session 1 — 13:00 to 13:20' },
+    { id: 'S2', label: 'Session 2 — 13:30 to 13:50' },
+    { id: 'S3', label: 'Session 3 — 14:00 to 14:20' }
+  ];
+
+  let currentDay    = 'saturday';
+  let selectedSlot  = null;
+  let uploadedFile  = null;
+  let bookings      = JSON.parse(localStorage.getItem('sec_bookings') || '{}');
+
+  function save() {
+    localStorage.setItem('sec_bookings', JSON.stringify(bookings));
+  }
+
+  function key(day, slotId) { return day + '_' + slotId; }
+
+  function selectDay(day) {
+    currentDay   = day;
+    selectedSlot = null;
+    document.getElementById('tab-sat').className = 'day-tab' + (day === 'saturday' ? ' active' : '');
+    document.getElementById('tab-sun').className = 'day-tab' + (day === 'sunday'   ? ' active' : '');
+    renderSlots();
+  }
+
+  function renderSlots() {
+    const c = document.getElementById('slots-container');
+    c.innerHTML = '';
+    SLOTS.forEach(slot => {
+      const k       = key(currentDay, slot.id);
+      const isTaken = !!bookings[k];
+      const isSel   = selectedSlot === slot.id && !isTaken;
+
+      let tagClass, tagText;
+      if (isTaken)     { tagClass = 'tag-taken';     tagText = '✗ Booked'; }
+      else if (isSel)  { tagClass = 'tag-selected';  tagText = '✓ Selected'; }
+      else             { tagClass = 'tag-available';  tagText = 'Available'; }
+
+      const div = document.createElement('div');
+      div.className = 'slot' + (isTaken ? ' taken' : '') + (isSel ? ' selected' : '');
+      div.innerHTML = `
+        <span class="slot-time">${slot.label}</span>
+        <span class="slot-tag ${tagClass}">${tagText}</span>
+      `;
+      if (!isTaken) div.onclick = () => { selectedSlot = slot.id; renderSlots(); };
+      c.appendChild(div);
+    });
+  }
+
+  function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    uploadedFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const prev = document.getElementById('upload-preview');
+      prev.src = ev.target.result;
+      prev.style.display = 'block';
+      document.getElementById('upload-area').classList.add('has-file');
+      document.querySelector('#upload-area .upload-text').innerHTML = '<strong>' + file.name + '</strong>';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function submitBooking() {
+    const name = document.getElementById('input-name').value.trim();
+    const wa   = document.getElementById('input-wa').value.trim();
+    const err  = document.getElementById('error-msg');
+
+    if (!selectedSlot || !name || !wa || !uploadedFile) {
+      err.style.display = 'block';
+      return;
+    }
+    err.style.display = 'none';
+
+    const k = key(currentDay, selectedSlot);
+    if (bookings[k]) {
+      err.textContent = 'This slot was just taken! Please choose another.';
+      err.style.display = 'block';
+      selectedSlot = null;
+      renderSlots();
+      return;
+    }
+
+    bookings[k] = { name, wa, time: new Date().toISOString() };
+    save();
+
+    const slotLabel = SLOTS.find(s => s.id === selectedSlot).label;
+    const dayLabel  = currentDay === 'saturday' ? 'Saturday' : 'Sunday';
+    document.getElementById('success-box').style.display = 'block';
+    document.getElementById('success-text').textContent =
+      `Hi ${name}! Your slot on ${dayLabel} (${slotLabel}) is confirmed. The examiner will reach out via WhatsApp to ${wa}. Please keep your payment screenshot for your records. Good luck with your preparation! 🚀`;
+
+    document.getElementById('btn-book').disabled = true;
+    selectedSlot = null;
+    renderSlots();
+  }
+
+  function toggleAdmin() {
+    const p = document.getElementById('admin-panel');
+    const showing = p.style.display === 'block';
+    p.style.display = showing ? 'none' : 'block';
+    if (!showing) renderAdmin();
+  }
+
+  function renderAdmin() {
+    const list = document.getElementById('bookings-list');
+    const keys = Object.keys(bookings);
+    if (keys.length === 0) {
+      list.innerHTML = '<p style="font-size:13px;color:#9ca3af;">No bookings yet.</p>';
+      return;
+    }
+    list.innerHTML = keys.map(k => {
+      const b   = bookings[k];
+      const [day, sid] = k.split('_');
+      const slot = SLOTS.find(s => s.id === sid);
+      const d    = new Date(b.time).toLocaleDateString('id-ID', { weekday:'short', day:'numeric', month:'short' });
+      return `
+        <div class="booking-entry">
+          <div>
+            <strong>${b.name}</strong><br>
+            <span>${day === 'saturday' ? 'Sabtu' : 'Minggu'} — ${slot ? slot.label : k}</span>
+          </div>
+          <div style="text-align:right;font-size:12px;">
+            ${b.wa}<br><span style="color:#d1d5db;">${d}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function clearBookings() {
+    if (!confirm('Clear ALL bookings? This cannot be undone.')) return;
+    bookings = {};
+    save();
+    renderSlots();
+    renderAdmin();
+  }
+
+  renderSlots();
+</script>
+</body>
+</html>
