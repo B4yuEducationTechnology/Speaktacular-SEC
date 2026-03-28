@@ -129,7 +129,7 @@
   </div>
 
   <h1>IELTS Speaking Prediction Test</h1>
-  <p class="desc">Latih kemampuan speaking IELTS kamu bersama tutor berpengalaman. Dapatkan simulasi realistis, feedback verbal & tertulis, serta materi eksklusif!</p>
+  <p class="desc">Latih kemampuan speaking IELTS kamu bersama tutor berpengalaman. Simulasi realistis, feedback verbal & tertulis, serta materi eksklusif.</p>
 
   <div class="section-label">Langkah 1 — Pilih Hari</div>
   <div class="day-tabs">
@@ -153,9 +153,8 @@
             <span class="pkg-badge">HEMAT 50%!</span>
           </div>
           <div class="pkg-features">
-            <span class="pkg-feat">Simulasi Speaking IELTS penuh 15 menit</span>
-            <span class="pkg-feat">Feedback verbal langsung dari tutor</span>
-            <span class="pkg-feat">Feedback tertulis & E-Certificate via email</span>
+            <span class="pkg-feat">Simulasi Speaking 15 menit + Feedback</span>
+            <span class="pkg-feat">E-Certificate via email</span>
           </div>
         </div>
       </div>
@@ -174,8 +173,7 @@
           </div>
           <div class="pkg-features">
             <span class="pkg-feat">Semua fitur Core + E-book Cambridge</span>
-            <span class="pkg-feat">Vocabulary Flashcards eksklusif</span>
-            <span class="pkg-feat">SEC Official Speaking Frameworks</span>
+            <span class="pkg-feat">Exclusive SEC Speaking Frameworks</span>
           </div>
         </div>
       </div>
@@ -185,24 +183,12 @@
 <form onsubmit="submitBooking(event)">
   <div class="section-label">Langkah 4 — Data Diri</div>
   <div class="form-row">
-    <div class="form-group">
-      <label>Nama Lengkap</label>
-      <input type="text" id="input-name" placeholder="cth. Budi Santoso" required />
-    </div>
-    <div class="form-group">
-      <label>Nama Panggilan</label>
-      <input type="text" id="input-nick" placeholder="cth. Budi" required />
-    </div>
+    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="input-name" required /></div>
+    <div class="form-group"><label>Nama Panggilan</label><input type="text" id="input-nick" required /></div>
   </div>
   <div class="form-row">
-    <div class="form-group">
-      <label>Nomor WhatsApp</label>
-      <input type="text" id="input-wa" placeholder="cth. 08123456789" required />
-    </div>
-    <div class="form-group">
-      <label>Alamat Email</label>
-      <input type="email" id="input-email" placeholder="cth. budi@email.com" required />
-    </div>
+    <div class="form-group"><label>Nomor WhatsApp</label><input type="text" id="input-wa" required /></div>
+    <div class="form-group"><label>Alamat Email</label><input type="email" id="input-email" required /></div>
   </div>
 
   <div class="section-label">Langkah 5 — Lakukan Pembayaran</div>
@@ -211,7 +197,7 @@
     <div class="pay-row"><span class="pay-label">QRIS</span><span class="pay-value">SPEAKING ENGLISH SOCIETY</span></div>
     <div class="pay-row"><span class="pay-label">Bank BTN</span><span class="pay-value">0031301880001019</span></div>
     <div class="pay-row pay-total-row" id="pay-total-row">
-      <span class="pay-label" style="font-weight:700; color:#1e40af;">Total pembayaran:</span>
+      <span class="pay-label" style="font-weight:700; color:#1e40af;">Total:</span>
       <span class="pay-value" style="font-size:16px; color:#1a56db;" id="pay-total">—</span>
     </div>
     <div class="qr-area"><img src="qris.jpeg" alt="QRIS" class="qr-image" /></div>
@@ -222,42 +208,33 @@
     <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
       <input type="checkbox" id="check-confirm" required style="width: 20px; height: 20px; margin-top: 2px;">
       <span style="font-size: 14px; color: #9a3412; line-height: 1.4;">
-        <strong>Saya sudah melakukan pembayaran</strong> dan akan mengirimkan bukti transfer via WhatsApp Admin.
+        <strong>Saya sudah membayar</strong> dan akan mengirimkan bukti transfer via WhatsApp Admin.
       </span>
     </label>
   </div>
 
-  <p class="error-msg" id="error-msg">Mohon lengkapi jadwal, paket, dan data diri.</p>
+  <p class="error-msg" id="error-msg">Mohon pilih jadwal, paket, dan lengkapi data diri.</p>
 
   <button type="submit" class="btn-book" id="btn-book">
     Konfirmasi & Selesaikan Pendaftaran →
   </button>
 </form>
   
-  <div class="success-box" id="success-box">
-  <h3>🎉 Pendaftaran Berhasil!</h3>
+<div class="success-box" id="success-box">
+  <h3>🎉 Berhasil!</h3>
   <p id="success-text" style="margin-bottom: 15px;"></p>
-  
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <a href="https://wa.me/6287776943109" target="_blank" 
-       style="display: block; text-align: center; background: #25D366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 14px;">
-       Chat Admin via WhatsApp
-    </a>
-    <a href="https://instagram.com/officialsec.idn" target="_blank" 
-       style="display: block; text-align: center; background: #E1306C; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 14px;">
-       Follow Instagram @officialsec.idn
-    </a>
-  </div>
+  <a href="https://wa.me/6287776943109" target="_blank" 
+     style="display: block; text-align: center; background: #25D366; color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: 700;">
+     Hubungi Admin via WhatsApp
+  </a>
 </div>
 
   <hr class="divider" />
-  <p class="admin-toggle" onclick="toggleAdmin()">Lihat semua pendaftaran (admin)</p>
+  <p class="admin-toggle" onclick="toggleAdmin()">Admin Panel</p>
   <div class="admin-panel" id="admin-panel">
-    <h3>Semua Pendaftaran</h3>
     <div id="bookings-list"></div>
-    <button class="btn-clear" onclick="clearBookings()">Hapus semua data</button>
+    <button class="btn-clear" onclick="clearBookings()">Hapus Data</button>
   </div>
-
 </div>
 
 <script>
@@ -290,8 +267,8 @@
     SLOTS.forEach(slot => {
       const k = key(currentDay, slot.id), taken = !!bookings[k], sel = selectedSlot===slot.id && !taken;
       let tc, tt;
-      if (taken)    { tc='tag-taken';      tt='✗ Sudah Terisi'; }
-      else if (sel) { tc='tag-selected';  tt='✓ Dipilih'; }
+      if (taken)    { tc='tag-taken'; tt='✗ Terisi'; }
+      else if (sel) { tc='tag-selected'; tt='✓ Dipilih'; }
       else          { tc='tag-available'; tt='Tersedia'; }
       const d = document.createElement('div');
       d.className = 'slot'+(taken?' taken':'')+(sel?' selected':'');
@@ -313,7 +290,6 @@
 
   async function submitBooking(event) {
     event.preventDefault();
-
     const name = document.getElementById('input-name').value.trim();
     const nick = document.getElementById('input-nick').value.trim();
     const wa   = document.getElementById('input-wa').value.trim();
@@ -322,60 +298,41 @@
     const err  = document.getElementById('error-msg');
     const btn  = document.getElementById('btn-book');
 
-    if (!selectedSlot || !selectedPkg || !name || !nick || !wa || !mail || !checkbox.checked) {
-      err.style.display = 'block'; 
-      return;
+    if (!selectedSlot || !selectedPkg || !name || !checkbox.checked) {
+      err.style.display = 'block'; return;
     }
 
     err.style.display = 'none';
     const k = key(currentDay, selectedSlot);
-    if (bookings[k]) {
-      err.textContent = 'Sesi ini baru saja terisi! Silakan pilih sesi lain.';
-      err.style.display = 'block'; selectedSlot = null; renderSlots(); return;
-    }
-
     btn.disabled = true;
-    btn.textContent = "Memproses pendaftaran...";
+    btn.textContent = "Memproses...";
 
-    // Save to Local Storage
     bookings[k] = { name, nick, wa, email: mail, pkg: selectedPkg, time: new Date().toISOString() };
     save();
 
     const sl  = SLOTS.find(s=>s.id===selectedSlot).label;
     const day = currentDay==='saturday' ? 'Sabtu' : 'Minggu';
 
-    // Submit to Formspree
     const formData = new FormData();
     formData.append('Nama', name);
-    formData.append('Email', mail);
-    formData.append('WhatsApp', wa);
     formData.append('Paket', PACKAGES[selectedPkg].name);
     formData.append('Jadwal', `${day}, ${sl}`);
 
     try {
-      await fetch("https://formspree.io/f/mbdpdbwk", {
-        method: "POST",
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      });
-    } catch (e) { console.log("Formspree error", e); }
+      await fetch("https://formspree.io/f/mbdpdbwk", { method: "POST", body: formData, headers: { 'Accept': 'application/json' } });
+    } catch (e) {}
 
-    // Update UI
     document.getElementById('success-box').style.display = 'block';
-    document.getElementById('success-text').textContent = `Halo ${nick}! Pendaftaran kamu berhasil dicatat.`;
-    btn.textContent = "Berhasil Terkirim ✓";
+    document.getElementById('success-text').textContent = `Halo ${nick}! Pendaftaran kamu berhasil.`;
+    btn.textContent = "Selesai ✓";
     renderSlots();
 
-    // WhatsApp Redirect
-    const message = `Halo Admin SEC! Saya ingin konfirmasi pendaftaran IELTS Prediction Test.%0A%0A` +
-                    `Nama: ${name}%0A` +
-                    `Paket: ${PACKAGES[selectedPkg].name}%0A` +
-                    `Jadwal: ${day}, ${sl}%0A%0A` +
-                    `Saya lampirkan bukti transfer di bawah ini.`;
+    const msg = `Halo Admin SEC! Saya konfirmasi pendaftaran IELTS Prediction.%0A%0A` +
+                `Nama: ${name}%0A` +
+                `Jadwal: ${day}, ${sl}%0A%0A` +
+                `Bukti transfer menyusul.`;
     
-    setTimeout(() => {
-      window.open(`https://wa.me/6287776943109?text=${message}`, '_blank');
-    }, 1200);
+    setTimeout(() => { window.open(`https://wa.me/6287776943109?text=${msg}`, '_blank'); }, 1000);
   }
 
   function toggleAdmin() {
@@ -386,24 +343,13 @@
 
   function renderAdmin() {
     const list = document.getElementById('bookings-list');
-    const keys = Object.keys(bookings);
-    if (!keys.length) { list.innerHTML = '<p style="font-size:13px;color:#9ca3af;">Belum ada pendaftaran.</p>'; return; }
-    list.innerHTML = keys.map(k => {
-      const b = bookings[k], [day, sid] = k.split('_');
-      const slot = SLOTS.find(s=>s.id===sid);
-      const d = new Date(b.time).toLocaleString('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-      return `<div class="booking-entry">
-        <div><strong>${b.name}</strong>${day==='saturday'?'Sabtu':'Minggu'} — ${slot?slot.label:k}<br>
-        <span style="color:#1a56db;">${PACKAGES[b.pkg]?PACKAGES[b.pkg].name:b.pkg}</span></div>
-        <div style="text-align:right;font-size:12px;">${b.wa}<br>${d}</div>
-      </div>`;
-    }).join('');
+    list.innerHTML = Object.keys(bookings).map(k => {
+      const b = bookings[k];
+      return `<div class="booking-entry"><strong>${b.name}</strong><span>${b.wa}</span></div>`;
+    }).join('') || 'Kosong';
   }
 
-  function clearBookings() {
-    if (!confirm('Hapus semua data pendaftaran?')) return;
-    bookings = {}; save(); renderSlots(); renderAdmin();
-  }
+  function clearBookings() { if (confirm('Hapus semua?')) { bookings = {}; save(); renderSlots(); renderAdmin(); } }
   renderSlots();
 </script>
 </body>
