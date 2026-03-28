@@ -285,7 +285,6 @@
   };
 
   let currentDay = 'saturday', selectedSlot = null, selectedPkg = null, uploadedFile = null;
-  // Note: bookings will now only show for you locally once someone submits
   let bookings = JSON.parse(localStorage.getItem('sec_bookings') || '{}');
 
   function save() { localStorage.setItem('sec_bookings', JSON.stringify(bookings)); }
@@ -374,7 +373,6 @@
     })
     .then(response => {
       if (response.ok) {
-        // Save locally so the slot appears "Taken" on the user's browser
         const k = key(currentDay, selectedSlot);
         bookings[k] = { name, nick, wa, email: mail, pkg: selectedPkg, time: new Date().toISOString() };
         save();
@@ -426,3 +424,5 @@
 
   renderSlots();
 </script>
+</body>
+</html>
